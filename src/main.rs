@@ -64,11 +64,14 @@ fn list(mut path: String) -> status::Custom<String>{
     let entries = fs::read_dir(path).expect("No such directory found");
     let mut result = String::new();
     for e in entries{
-        if e.unwrap().metadata().unwrap().is_dir(){
-            result = format!("{}/d{:?}", result, e.unwrap().file_name());
+        let entry = e.unwrap();
+        let name = String::from(entry.file_name().to_str().unwrap().clone());
+        let enrty_meta = entry.metadata().unwrap();
+        if enrty_meta.is_dir(){
+            result = format!("{}/d{:?}", result, name);
         }
-        if e.unwrap().metadata().unwrap().is_file(){
-            result = format!("{}/f{:?}", result, e.unwrap().file_name());
+        if enrty_meta.is_file(){
+            result = format!("{}/f{:?}", result, name);
         }
     }
     return status::Custom(Status::Ok, result)
